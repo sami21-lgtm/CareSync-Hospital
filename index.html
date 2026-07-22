@@ -297,6 +297,27 @@
             </div>
         </main>
     </div>
+    <!-- Hidden Printable Bill Slip -->
+    <div id="print-section" style="display: none;">
+        <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px;">
+            <h1 style="color: #1e3a8a; margin: 0; font-family: Arial, sans-serif;">Bangladesh Specialized Hospital</h1>
+            <p style="margin: 5px 0; color: #555;">21 Shyamoli, Mirpur Road, Dhaka-1207, Bangladesh</p>
+            <h3 style="background: #1e3a8a; color: white; display: inline-block; padding: 5px 15px; border-radius: 4px; font-family: Arial, sans-serif;">Patient Billing Invoice</h3>
+        </div>
+        
+        <div id="print-content" style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <!-- JS will inject the bill data here -->
+        </div>
+        
+        <div style="margin-top: 60px; display: flex; justify-content: space-between; font-family: Arial, sans-serif;">
+            <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">Prepared By (Cashier)</div>
+            <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">Authorized Signature</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
 
     <script src="script.js"></script>
 </body>
