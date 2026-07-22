@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareSync - Bangladesh  Hospital Portal</title>
+    <title>CareSync - Bangladesh Hospital Portal</title>
     <link rel="stylesheet" href="style.css">
     <!-- FontAwesome Icons & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -81,7 +81,6 @@
     <div class="portal-layout hidden" id="portal-section">
         
         <!-- Sidebar Navigation -->
-<!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div>
                 <div class="brand-logo" style="font-size: 1.8rem; margin-bottom: 2rem;">
@@ -261,10 +260,15 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- UPDATED SECTION: Added Doctor Visit Fee Field -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                             <div class="input-box">
                                 <label>Length of Stay (Days)</label>
                                 <input type="number" id="p-days" placeholder="e.g. 4" min="1" value="1" required>
+                            </div>
+                            <div class="input-box">
+                                <label>Doctor Visit Fee (BDT / Day)</label>
+                                <input type="number" id="p-doctor-fee" placeholder="e.g. 1000" value="1000" required>
                             </div>
                             <div class="input-box">
                                 <label>Additional Medicine & Test Fees (BDT)</label>
