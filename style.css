@@ -21,7 +21,7 @@
 }
 
 body {
-    /* Using your specific hospital background image with a dark overlay */
+    /* Using hospital background image with dark overlay */
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 27, 75, 0.9) 100%), 
                 url('image_29bf89.jpg');
     background-size: cover;
@@ -337,6 +337,7 @@ td {
     color: white;
     background: var(--primary);
     transition: 0.2s;
+    margin-right: 4px;
 }
 
 .btn-small.print { background: var(--warning); color: black;}
@@ -375,7 +376,7 @@ td {
 .doc-card p { color: var(--text-muted); font-size: 0.85rem; }
 
 /* =========================================
-   Print Styles
+   Print Styles (Invoice & Slip Formatting)
    ========================================= */
 @media print {
     body * {
@@ -389,14 +390,24 @@ td {
         left: 0;
         top: 0;
         width: 100%;
-        background: white;
-        color: black;
-        padding: 20px;
+        background: #ffffff;
+        color: #000000;
+        padding: 30px;
+    }
+    #print-section table {
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    #print-section th, #print-section td {
+        border-bottom: 1px solid #ddd;
+        color: #000;
     }
     .auth-wrapper, .portal-layout {
         display: none !important;
     }
 }
+
 /* =========================================
    Mobile Responsiveness (Phone Size Fixes)
    ========================================= */
@@ -465,7 +476,7 @@ td {
         gap: 1rem;
     }
 
-    /* Make forms stack vertically */
+    /* Make forms (including 2 and 3 column grids) stack vertically on phones */
     #patient-crud-form > div {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
