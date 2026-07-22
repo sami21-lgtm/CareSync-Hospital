@@ -1,6 +1,5 @@
 // ==========================================
 // 1. Database Mock (Doctors & Departments)
-// Extracted from image_29b822.jpg & image_29b829.jpg
 // ==========================================
 const doctorsDB = [
     { name: "Dr. Shafiqur Rahman", dept: "Anaesthesia", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFBXoSzG9JJbaIj3GKnZoWPcGt1T3b2fXqgSrsijMKsg&s=10" },
@@ -51,26 +50,22 @@ let patientsDB = [];
 // 1.5 Auto-Populate Department Dropdowns
 // ==========================================
 function populateDepartments() {
-    // Get unique departments from our DB and sort them alphabetically
     const departments = [...new Set(doctorsDB.map(doc => doc.dept))].sort();
     
     const enrollDeptSelect = document.getElementById('enroll-dept');
     const pDeptSelect = document.getElementById('p-department');
     
     if(enrollDeptSelect && pDeptSelect) {
-        // Clear existing hardcoded HTML options
         enrollDeptSelect.innerHTML = '';
         pDeptSelect.innerHTML = '';
         
         departments.forEach(dept => {
-            // Populate Self-Enroll Dropdown
             const option1 = document.createElement('option');
             option1.className = "text-dark";
             option1.value = dept;
             option1.textContent = dept;
             enrollDeptSelect.appendChild(option1);
             
-            // Populate New Admission Dropdown
             const option2 = document.createElement('option');
             option2.value = dept;
             option2.textContent = dept;
@@ -78,7 +73,6 @@ function populateDepartments() {
         });
     }
 }
-// Run this immediately on load
 populateDepartments();
 
 // ==========================================
@@ -95,7 +89,7 @@ loginForm.addEventListener('submit', (e) => {
     authSection.classList.add('hidden');
     portalSection.classList.remove('hidden');
     renderDashboard();
-    updateDoctorDropdown(); // Ensure doctors list loads for default dept
+    updateDoctorDropdown();
 });
 
 enrollForm.addEventListener('submit', (e) => {
@@ -131,16 +125,15 @@ sidebarTabs.forEach(tab => {
 });
 
 // ==========================================
-// 4. New Admission & Billing Logic
+// 4. New Admission & Billing Logic (UPDATED)
 // ==========================================
 const pDepartmentSelect = document.getElementById('p-department');
 const pDoctorSelect = document.getElementById('p-doctor');
 const admissionForm = document.getElementById('patient-crud-form');
 
-// Function to populate doctor dropdown based on selected department
 function updateDoctorDropdown() {
     const selectedDept = pDepartmentSelect.value;
-    pDoctorSelect.innerHTML = ""; // Clear existing
+    pDoctorSelect.innerHTML = "";
 
     const filteredDocs = doctorsDB.filter(doc => doc.dept === selectedDept);
     
@@ -167,21 +160,27 @@ admissionForm.addEventListener('submit', (e) => {
     const dept = document.getElementById('p-department').value;
     const doctor = document.getElementById('p-doctor').value;
     const accType = document.getElementById('p-accommodation').value;
-    const days = parseInt(document.getElementById('p-days').value);
-    const medicineFee = parseFloat(document.getElementById('p-medicine-fee').value);
+    const days = parseInt(document.getElementById('p-days').value) || 0;
+    const medicineFee = parseFloat(document.getElementById('p-medicine-fee').value) || 0;
+    
+    // Read Doctor Visit Fee (If input field exists)
+    const doctorFeeInput = document.getElementById('p-doctor-fee');
+    const doctorFee = doctorFeeInput ? (parseFloat(doctorFeeInput.value) || 0) : 0;
 
+    // Parse Room Rate from string (e.g. BDT 2,500)
     const rateMatch = accType.match(/BDT ([\d,]+)/);
     let dailyRate = 0;
     if (rateMatch) {
         dailyRate = parseFloat(rateMatch[1].replace(/,/g, ''));
     }
 
-    const totalBill = (dailyRate * days) + medicineFee;
+    // Total Calculation with Doctor Fee
+    const totalBill = (dailyRate * days) + medicineFee + doctorFee;
 
     const newPatient = {
         id: Date.now(),
-        name, age, gender, dept, doctor, accType, days, medicineFee,
-        totalBill,
+        name, age, gender, dept, doctor, accType, days, dailyRate, 
+        medicineFee, doctorFee, totalBill,
         status: 'Active'
     };
 
@@ -199,11 +198,13 @@ admissionForm.addEventListener('submit', (e) => {
 // ==========================================
 // 5. Patient Registry & Dashboard Render
 // ==========================================
-function renderRegistryTable() {
+function renderRegistryTable(filteredList = null) {
     const tableBody = document.getElementById('patient-table-body');
     tableBody.innerHTML = "";
 
-    patientsDB.forEach(p => {
+    const listToRender = filteredList || patientsDB;
+
+    listToRender.forEach(p => {
         const tr = document.createElement('tr');
         const statusClass = p.status === 'Active' ? 'status-active' : 'status-discharged';
 
@@ -226,9 +227,11 @@ function renderRegistryTable() {
 
 function renderDashboard() {
     const activeCount = patientsDB.filter(p => p.status === 'Active').length;
-    document.getElementById('stat-total-patients').textContent = activeCount;
-    // Update doctor count dynamically
-    document.querySelector('.stat-card:nth-child(2) h3').textContent = doctorsDB.length + '+';
+    const totalCountElem = document.getElementById('stat-total-patients');
+    if (totalCountElem) totalCountElem.textContent = activeCount;
+
+    const doctorStatCard = document.querySelector('.stat-card:nth-child(2) h3');
+    if (doctorStatCard) doctorStatCard.textContent = doctorsDB.length + '+';
 }
 
 // ==========================================
@@ -252,47 +255,60 @@ window.printBill = function(id) {
     const printContent = document.getElementById('print-content');
     const date = new Date().toLocaleDateString();
 
-    printContent.innerHTML = `
-        <table style="width: 100%; margin-bottom: 20px;">
-            <tr>
-                <td><strong>Patient Name:</strong> ${patient.name}</td>
-                <td style="text-align: right;"><strong>Date:</strong> ${date}</td>
-            </tr>
-            <tr>
-                <td><strong>Age/Gender:</strong> ${patient.age} / ${patient.gender}</td>
-                <td style="text-align: right;"><strong>Invoice ID:</strong> BSH-${patient.id}</td>
-            </tr>
-            <tr>
-                <td><strong>Department:</strong> ${patient.dept}</td>
-                <td style="text-align: right;"><strong>Consultant:</strong> ${patient.doctor}</td>
-            </tr>
-        </table>
+    const roomTotal = (patient.dailyRate || 0) * (patient.days || 0);
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-            <thead>
-                <tr style="background: #f3f4f6;">
-                    <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Description</th>
-                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Qty / Days</th>
-                    <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Amount (BDT)</th>
-                </tr>
-            </thead>
-            <tbody>
+    printContent.innerHTML = `
+        <div style="font-family: Arial, sans-serif;">
+            <h2 style="text-align: center; margin-bottom: 5px;">Bangabandhu Sheikh Mujib Medical University / General Hospital</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Patient Admission & Billing Invoice</p>
+            <hr style="margin-bottom: 20px; border: 0.5px solid #ccc;"/>
+            
+            <table style="width: 100%; margin-bottom: 20px; font-size: 14px;">
                 <tr>
-                    <td style="border: 1px solid #ddd; padding: 10px;">${patient.accType}</td>
-                    <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${patient.days}</td>
-                    <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${(patient.totalBill - patient.medicineFee).toLocaleString()}</td>
+                    <td><strong>Patient Name:</strong> ${patient.name}</td>
+                    <td style="text-align: right;"><strong>Date:</strong> ${date}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #ddd; padding: 10px;">Medicines & Pathological Tests</td>
-                    <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">-</td>
-                    <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${patient.medicineFee.toLocaleString()}</td>
+                    <td><strong>Age / Gender:</strong> ${patient.age} Yrs / ${patient.gender}</td>
+                    <td style="text-align: right;"><strong>Invoice ID:</strong> BSH-${patient.id}</td>
                 </tr>
-                <tr style="font-weight: bold; background: #eef2ff;">
-                    <td colspan="2" style="border: 1px solid #ddd; padding: 10px; text-align: right;">Grand Total:</td>
-                    <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">৳ ${patient.totalBill.toLocaleString()}</td>
+                <tr>
+                    <td><strong>Department:</strong> ${patient.dept}</td>
+                    <td style="text-align: right;"><strong>Consultant:</strong> ${patient.doctor}</td>
                 </tr>
-            </tbody>
-        </table>
+            </table>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
+                <thead>
+                    <tr style="background: #f3f4f6; text-align: left;">
+                        <th style="border: 1px solid #ddd; padding: 10px;">Description</th>
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Qty / Days</th>
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Amount (BDT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${patient.accType}</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${patient.days}</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">৳ ${roomTotal.toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">Doctor Visit Fee</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">1</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">৳ ${(patient.doctorFee || 0).toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">Medicines & Pathological Tests</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">-</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">৳ ${(patient.medicineFee || 0).toLocaleString()}</td>
+                    </tr>
+                    <tr style="font-weight: bold; background: #eef2ff;">
+                        <td colspan="2" style="border: 1px solid #ddd; padding: 10px; text-align: right;">Grand Total:</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">৳ ${patient.totalBill.toLocaleString()}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     `;
     window.print();
 }
@@ -300,11 +316,14 @@ window.printBill = function(id) {
 // ==========================================
 // 7. Doctors Directory Render
 // ==========================================
-function renderDoctorsDirectory() {
+function renderDoctorsDirectory(filteredDocs = null) {
     const container = document.getElementById('doctors-directory-container');
+    if(!container) return;
+    
     container.innerHTML = "";
+    const docsToRender = filteredDocs || doctorsDB;
 
-    doctorsDB.forEach(doc => {
+    docsToRender.forEach(doc => {
         const card = document.createElement('div');
         card.className = 'doc-card';
         card.innerHTML = `
@@ -313,5 +332,30 @@ function renderDoctorsDirectory() {
             <p><i class="fa-solid fa-stethoscope"></i> ${doc.dept}</p>
         `;
         container.appendChild(card);
+    });
+}
+
+// ==========================================
+// 8. Global Search Functionality
+// ==========================================
+const searchInput = document.querySelector('.search-container input');
+if(searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        // Search Patients
+        const filteredPatients = patientsDB.filter(p => 
+            p.name.toLowerCase().includes(query) || 
+            p.dept.toLowerCase().includes(query) ||
+            p.doctor.toLowerCase().includes(query)
+        );
+        renderRegistryTable(filteredPatients);
+
+        // Search Doctors
+        const filteredDoctors = doctorsDB.filter(doc => 
+            doc.name.toLowerCase().includes(query) || 
+            doc.dept.toLowerCase().includes(query)
+        );
+        renderDoctorsDirectory(filteredDoctors);
     });
 }
