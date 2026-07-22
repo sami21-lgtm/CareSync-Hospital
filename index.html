@@ -11,25 +11,65 @@
 <body>
 
     <!-- Authentication Section -->
-    <div class="auth-wrapper" id="auth-section">
-        <div class="glass-auth-card">
-            <div class="brand-logo">
-                <i class="fa-solid fa-square-h"></i>CareSync
+    <div class="auth-wrapper" id="auth-section"> 
+        <!-- Left Card: Staff Login -->
+        <div class="glass-auth-card dark-glass">
+            <div class="brand-logo" style="color: white;">
+                <i class="fa-solid fa-heart-pulse" style="color: #ef4444;"></i> CareSync
             </div>
-            <p class="auth-subtitle">Specialized Hospital Portal</p>
+            <p class="auth-subtitle" style="color: #cbd5e1;">Hospital Staff Login</p>
             
             <form id="login-form">
-                <div class="input-box">
+                <div class="input-box dark-input">
                     <label for="username">Staff Username</label>
                     <input type="text" id="username" placeholder="e.g., admin_sami" required>
                 </div>
-                <div class="input-box">
+                <div class="input-box dark-input">
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-action-primary">Secure Log In</button>
+                <button type="submit" class="btn-action-primary" style="background: #4f46e5;">Secure Log In</button>
             </form>
         </div>
+
+        <!-- Right Card: Self Enroll -->
+        <div class="glass-auth-card dark-glass">
+            <div class="brand-logo" style="color: #10b981;">
+                <i class="fa-solid fa-file-medical"></i> Self Enroll
+            </div>
+            <p class="auth-subtitle" style="color: #cbd5e1;">Quick Patient Self-Registration</p>
+            
+            <form id="enroll-form">
+                <div class="input-box dark-input">
+                    <label>Your Full Name</label>
+                    <input type="text" placeholder="Enter your name" required>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-box dark-input" style="flex: 1;">
+                        <label>Age</label>
+                        <input type="number" placeholder="Age" required>
+                    </div>
+                    <div class="input-box dark-input" style="flex: 1;">
+                        <label>Gender</label>
+                        <select style="color: white;">
+                            <option class="text-dark">Male</option>
+                            <option class="text-dark">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-box dark-input">
+                    <label>Consultation Department</label>
+                    <select style="color: white;">
+                        <option class="text-dark">Cardiology</option>
+                        <option class="text-dark">Neurology</option>
+                        <option class="text-dark">General Medicine</option>
+                        <option class="text-dark">ICU</option>
+                    </select>
+                </div>
+                <button type="button" class="btn-action-primary" style="background: #10b981;">Submit Registration</button>
+            </form>
+        </div>
+
     </div>
 
     <!-- Main Portal Section -->
