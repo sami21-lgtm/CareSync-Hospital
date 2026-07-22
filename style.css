@@ -343,3 +343,34 @@ td { font-size: 0.9rem; }
     .ws-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .search-container { width: 100%; }
 }
+/* --- PRINT MEDIA QUERY --- */
+@media print {
+    /* Hide the web portal completely */
+    body * {
+        visibility: hidden;
+    }
+    
+    /* Show only the print section */
+    #print-section, #print-section * {
+        visibility: visible;
+        display: block !important;
+    }
+    
+    /* Setup print page positioning */
+    #print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background: white;
+    }
+    
+    @page { 
+        margin: 0; 
+    }
+    body { 
+        margin: 1.5cm; 
+        background: white; 
+    }
+}
