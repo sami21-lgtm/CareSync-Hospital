@@ -348,3 +348,87 @@ body {
 .portal-layout {
     background: #ffffff;
 }
+/* =========================================
+   Responsive Design (Phone & Tablet Fix)
+   ========================================= */
+
+@media (max-width: 991px) {
+    /* Login Page Fix for Phone/Tablet */
+    .auth-wrapper {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
+
+    .glass-auth-card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Dashboard Layout Fix */
+    .portal-layout {
+        grid-template-columns: 1fr; /* Sidebar ar Main content niche niche ashbe */
+        height: auto;
+        min-height: 100vh;
+        width: 100%;
+        border-radius: 0;
+        overflow-y: auto;
+    }
+
+    .sidebar {
+        padding: 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        gap: 10px;
+        margin-top: 0;
+        flex-wrap: wrap;
+    }
+
+    .user-widget {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .workspace {
+        padding: 1.5rem 1rem;
+    }
+
+    /* Stats Grid Fix */
+    .stats-grid {
+        grid-template-columns: 1fr; /* 3 ta card er bodole 1 ta kore niche niche dekhabe */
+        gap: 1rem;
+    }
+
+    /* Header & Search Bar Fix */
+    .ws-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    /* Admission Form Fix */
+    #patient-crud-form > div {
+        grid-template-columns: 1fr !important; /* Form er input gulo niche niche ashbe */
+    }
+
+    .input-box[style*="grid-column"] {
+        grid-column: span 1 !important;
+    }
+
+    /* Full Registry View Fix */
+    .full-height-table {
+        height: auto;
+        min-height: 500px;
+    }
+}
