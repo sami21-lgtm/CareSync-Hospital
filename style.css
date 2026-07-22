@@ -21,9 +21,9 @@
 }
 
 body {
-    /* Using your specific hospital background image with a dark overlay */
+    
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 27, 75, 0.9) 100%), 
-                url('image_29bf89.jpg');
+                url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
