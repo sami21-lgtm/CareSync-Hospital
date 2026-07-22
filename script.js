@@ -14,8 +14,8 @@ const bshDoctors = [
 
 // Initial Sample Patients Data
 let patientsList = [
-    { id: 1, name: "Tanvir Ahmed", age: 34, gender: "Male", department: "Cardiology", doctor: "Prof. Dr. Abdul Wadud Chowdhury", accommodation: "VIP Cabin (BDT 10,000/day)", days: 3, medicineFee: 6500, totalBill: 36500, status: "Admitted" },
-    { id: 2, name: "Sumaiya Akter", age: 28, gender: "Female", department: "Neurology", doctor: "Dr. Sirajee Shafiqul Islam", accommodation: "Semi-Private Cabin (BDT 5,000/day)", days: 2, medicineFee: 3000, totalBill: 13000, status: "Admitted" }
+    { id: 1001, name: "Tanvir Ahmed", age: 34, gender: "Male", department: "Cardiology", doctor: "Prof. Dr. Abdul Wadud Chowdhury", accommodation: "VIP Cabin (BDT 10,000/day)", days: 3, medicineFee: 6500, totalBill: 36500, status: "Admitted" },
+    { id: 1002, name: "Sumaiya Akter", age: 28, gender: "Female", department: "Neurology", doctor: "Dr. Sirajee Shafiqul Islam", accommodation: "Semi-Private Cabin (BDT 5,000/day)", days: 2, medicineFee: 3000, totalBill: 13000, status: "Admitted" }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const gender = document.getElementById("enroll-gender").value;
         const dept = document.getElementById("enroll-dept").value;
         
-        // Match a doctor from selected department
         const availableDoc = bshDoctors.find(d => d.dept === dept) || bshDoctors[0];
 
         const newPatient = {
@@ -74,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuItems = document.querySelectorAll(".sidebar-menu li");
     menuItems.forEach(item => {
         item.addEventListener("click", (e) => {
+            if(item.id === "logout-btn" || item.querySelector("#logout-btn")) return;
             e.preventDefault();
             menuItems.forEach(i => i.classList.remove("active"));
             item.classList.add("active");
@@ -86,7 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Dynamic Doctor Dropdown Population based on Department Selection
+    // Logout Function
+    document.getElementById("logout-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        portalSection.classList.add("hidden");
+        authSection.classList.remove("hidden");
+        loginForm.reset();
+    });
+
+    // Dynamic Doctor Dropdown Population
     function updateDoctorsDropdown() {
         const selectedDept = deptSelect.value;
         doctorSelect.innerHTML = "";
@@ -103,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     deptSelect.addEventListener("change", updateDoctorsDropdown);
-    updateDoctorsDropdown(); // Initial call
+    updateDoctorsDropdown(); 
 
     // Patient Admission & Billing Form Submission
     patientForm.addEventListener("submit", (e) => {
@@ -137,37 +145,27 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDoctorsDropdown();
         renderAllData();
 
-        // Switch to Registry Tab to view added patient
-        document.querySelector('[data-tab="registry-tab"]').click();
+        // Switch to Registry Tab automatically
+        document.querySelectorAll(".sidebar-menu li").forEach(i => i.classList.remove("active"));
+        document.getElementById("tab-registry").classList.add("active");
+        
+        document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
+        document.getElementById("registry-tab").classList.remove("hidden");
     });
+
+    // Global Search Functionality
+    const globalSearch = document.getElementById("global-search");
+    if(globalSearch) {
+        globalSearch.addEventListener("input", (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            renderPatientTable(searchTerm);
+        });
+    }
 
     // Render Patients Table & Doctors Directory
     window.renderAllData = function() {
-        // Stats
         document.getElementById("stat-total-patients").textContent = patientsList.length;
-
-        // Patient Table
-        const tbody = document.getElementById("patient-table-body");
-        tbody.innerHTML = "";
-
-        patientsList.forEach(p => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td><strong>${p.name}</strong></td>
-                <td>${p.age} yrs / ${p.gender}</td>
-                <td><span class="badge">${p.department}</span></td>
-                <td>${p.doctor}</td>
-                <td>${p.accommodation} (${p.days}d)</td>
-                <td><strong>BDT ${p.totalBill.toLocaleString()}</strong></td>
-                <td><span class="status-badge">${p.status}</span></td>
-                <td>
-                    <div class="action-btns-wrapper">
-                        <button class="action-btn delete-btn" onclick="deletePatient(${p.id})"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
+        renderPatientTable();
 
         // Doctors Directory Grid
         const docGrid = document.getElementById("doctors-directory-container");
@@ -185,11 +183,94 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    function renderPatientTable(searchTerm = "") {
+        const tbody = document.getElementById("patient-table-body");
+        tbody.innerHTML = "";
+
+        const filteredPatients = patientsList.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) || 
+            p.department.toLowerCase().includes(searchTerm) ||
+            p.doctor.toLowerCase().includes(searchTerm)
+        );
+
+        filteredPatients.forEach(p => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${p.name}</strong></td>
+                <td>${p.age} yrs / ${p.gender}</td>
+                <td><span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">${p.department}</span></td>
+                <td>${p.doctor}</td>
+                <td>${p.accommodation} <br><small>(${p.days} Days)</small></td>
+                <td><strong style="color: #1e3a8a;">৳ ${p.totalBill.toLocaleString()}</strong></td>
+                <td><span class="status-badge" style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">${p.status}</span></td>
+                <td>
+                    <div class="action-btns-wrapper" style="display: flex; gap: 8px;">
+                        <!-- Print Button Added Here -->
+                        <button class="action-btn" onclick="printBill(${p.id})" style="background: #1e3a8a; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;" title="Print Bill"><i class="fa-solid fa-print"></i></button>
+                        
+                        <button class="action-btn delete-btn" onclick="deletePatient(${p.id})" style="background: #dc2626; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;" title="Discharge Patient"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
     // Delete Patient Function
     window.deletePatient = function(id) {
         if(confirm("Are you sure you want to remove this patient record?")) {
             patientsList = patientsList.filter(p => p.id !== id);
             renderAllData();
         }
+    };
+
+    // Print Bill Function
+    window.printBill = function(id) {
+        const patient = patientsList.find(p => p.id === id);
+        if(!patient) return;
+
+        const printContent = document.getElementById("print-content");
+        const accommodationBill = patient.totalBill - patient.medicineFee;
+        const displayId = patient.id.toString().slice(-6); // Shorter ID for bill
+
+        printContent.innerHTML = `
+            <table style="width: 100%; text-align: left; margin-bottom: 20px; font-size: 15px;">
+                <tr>
+                    <th style="padding: 5px 0; width: 20%;">Patient ID:</th><td style="width: 30%;">BSH-${displayId}</td>
+                    <th style="padding: 5px 0; width: 20%;">Date:</th><td style="width: 30%;">${new Date().toLocaleDateString('en-GB')}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 5px 0;">Name:</th><td><strong>${patient.name}</strong></td>
+                    <th style="padding: 5px 0;">Age/Gender:</th><td>${patient.age} Yrs / ${patient.gender}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 5px 0;">Department:</th><td>${patient.department}</td>
+                    <th style="padding: 5px 0;">Consultant:</th><td>${patient.doctor}</td>
+                </tr>
+            </table>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 15px;" border="1">
+                <tr style="background: #f3f4f6;">
+                    <th style="padding: 10px; text-align: left;">Description</th>
+                    <th style="padding: 10px; text-align: right;">Amount (BDT)</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">Hospital Accommodation: ${patient.accommodation} <br><small>(${patient.days} Days)</small></td>
+                    <td style="padding: 10px; text-align: right;">${accommodationBill.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">Medicine, Diagnostics & Additional Services</td>
+                    <td style="padding: 10px; text-align: right;">${patient.medicineFee.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px; text-align: right; font-size: 16px;">Total Amount Payable:</th>
+                    <th style="padding: 10px; text-align: right; font-size: 18px; color: #1e3a8a;">৳ ${patient.totalBill.toLocaleString()}</th>
+                </tr>
+            </table>
+            <p style="font-size: 15px;">Payment Status: <strong style="color: #166534;">Cleared / Admitted</strong></p>
+        `;
+
+        // Trigger the browser's print dialog
+        window.print();
     };
 });
