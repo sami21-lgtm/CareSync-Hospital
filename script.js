@@ -3,9 +3,9 @@
 // Extracted from image_29b822.jpg & image_29b829.jpg
 // ==========================================
 const doctorsDB = [
-    { name: "Dr. Shafiqur Rahman", dept: "Anaesthesia", img: "https://randomuser.me/api/portraits/men/10.jpg" },
-    { name: "Dr. Amina Begum", dept: "Blood Bank", img: "https://randomuser.me/api/portraits/women/11.jpg" },
-    { name: "Prof. Dr. Hasan Mahmud", dept: "Breast, Colorectal & Laparoscopic Surgery", img: "https://randomuser.me/api/portraits/men/12.jpg" },
+    { name: "Dr. Shafiqur Rahman", dept: "Anaesthesia", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFBXoSzG9JJbaIj3GKnZoWPcGt1T3b2fXqgSrsijMKsg&s=10" },
+    { name: "Dr. Amina Begum", dept: "Blood Bank", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiw8PlNVck2OLCdOn_Z-x8sTcBlSH-wyUteJ2rN1vNHg&s=10" },
+    { name: "Prof. Dr. Hasan Mahmud", dept: "Breast, Colorectal & Laparoscopic Surgery", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRHHp3UfQcFjqbv3EtAG6Pc_TjcuZrgXveVm8sBfoSdQ&s=10" },
     { name: "Dr. Tariqul Islam", dept: "Cardiac surgery", img: "https://randomuser.me/api/portraits/men/13.jpg" },
     { name: "Prof. Dr. A.K.M. Fazlur Rahman", dept: "Cardiology", img: "https://randomuser.me/api/portraits/men/32.jpg" },
     { name: "Dr. Laila Parveen", dept: "Cardiology", img: "https://randomuser.me/api/portraits/women/44.jpg" },
