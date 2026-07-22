@@ -397,3 +397,82 @@ td {
         display: none !important;
     }
 }
+/* =========================================
+   Mobile Responsiveness (Phone Size Fixes)
+   ========================================= */
+@media (max-width: 768px) {
+    /* Auth Section Fixes */
+    .auth-wrapper {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+    
+    .glass-auth-card {
+        padding: 1.5rem;
+    }
+
+    /* Portal Layout Fixes */
+    .portal-layout {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Fixes for Mobile */
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1rem;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .sidebar-menu li {
+        margin-bottom: 0;
+        flex: 1 1 auto;
+    }
+
+    .sidebar-menu a {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        justify-content: center;
+    }
+
+    /* Workspace & Header Fixes */
+    .workspace {
+        padding: 1rem;
+    }
+
+    .ws-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    /* Stats Grid & Form Fixes */
+    .stats-grid {
+        grid-template-columns: 1fr; /* Make cards stack vertically on phones */
+        gap: 1rem;
+    }
+
+    /* Make forms stack vertically */
+    #patient-crud-form > div {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    
+    /* Doctors Grid Fix */
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+}
